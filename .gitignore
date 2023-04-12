@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/strand
+strand.so
+strand.dylib
+strand.dll
+strand.a
+strand.lib
+strand-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst
