@@ -9,12 +9,12 @@
  * Source:    $(DRUNTIMESRC core/thread/fiber.d)
  */
 
-module core.thread.fiber;
+module strand.fiber;
 
-import core.thread.osthread;
-import core.thread.threadgroup;
-import core.thread.types;
-import core.thread.context;
+import strand.osthread;
+import strand.threadgroup;
+import strand.types;
+import strand.context;
 
 import core.memory : pageSize;
 
