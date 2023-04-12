@@ -1215,10 +1215,22 @@ package void onThreadError(string msg) nothrow @nogc
     __gshared ThreadError error = new ThreadError(null);
     error.msg = msg;
     error.next = null;
-    import core.exception : SuppressTraceInfo;
     error.info = SuppressTraceInfo.instance;
     throw error;
 }
+
+package class SuppressTraceInfo : Throwable.TraceInfo
+{
+    override int opApply(scope int delegate(ref const(char[]))) const { return 0; }
+    override int opApply(scope int delegate(ref size_t, ref const(char[]))) const { return 0; }
+    override string toString() const { return null; }
+    static SuppressTraceInfo instance() @trusted @nogc pure nothrow
+    {
+        static immutable SuppressTraceInfo it = new SuppressTraceInfo;
+        return cast(SuppressTraceInfo)it;
+    }
+}
+
 
 unittest
 {
