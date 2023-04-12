@@ -20,18 +20,20 @@ import core.stdc.stdlib : free, realloc;
 
 private
 {
-    import core.internal.traits : externDFunc;
-
     // interface to rt.tlsgc
-    alias rt_tlsgc_init = externDFunc!("rt.tlsgc.init", void* function() nothrow @nogc);
-    alias rt_tlsgc_destroy = externDFunc!("rt.tlsgc.destroy", void function(void*) nothrow @nogc);
+    pragma(mangle, "_D2rt5tlsgc4initFNbNiZPv")
+    extern(D) void* function() nothrow @nogc rt_tlsgc_init;
+
+    pragma(mangle, "_D2rt5tlsgc7destroyFNbNiPvZv")
+    extern(D) void function(void*) nothrow @nogc rt_tlsgc_destroy;
 
     alias ScanDg = void delegate(void* pstart, void* pend) nothrow;
-    alias rt_tlsgc_scan =
-        externDFunc!("rt.tlsgc.scan", void function(void*, scope ScanDg) nothrow);
 
-    alias rt_tlsgc_processGCMarks =
-        externDFunc!("rt.tlsgc.processGCMarks", void function(void*, scope IsMarkedDg) nothrow);
+    pragma(mangle, "_D2rt5tlsgc4scanFNbPvMDFNbQhQjZvZv")
+    extern(D) void function(void*, scope ScanDg) nothrow rt_tlsgc_scan;
+
+    pragma(mangle, "_D2rt5tlsgc14processGCMarksFNbPvMDFNbQhZiZv")
+    extern(D) void function(void*, scope IsMarkedDg) nothrow rt_tlsgc_processGCMarks;
 }
 
 
@@ -80,10 +82,14 @@ private
     enum mutexAlign = __traits(classInstanceAlignment, Mutex);
     enum mutexClassInstanceSize = __traits(classInstanceSize, Mutex);
 
-    alias swapContext = externDFunc!("strand.osthread.swapContext", void* function(void*) nothrow @nogc);
+    pragma(mangle, "_D6strand8osthread11swapContextFNbNiPvZQd")
+    extern(D) void* function(void*) nothrow @nogc swapContext;
 
-    alias getStackBottom = externDFunc!("strand.osthread.getStackBottom", void* function() nothrow @nogc);
-    alias getStackTop = externDFunc!("strand.osthread.getStackTop", void* function() nothrow @nogc);
+    pragma(mangle, "_D6strand8osthread14getStackBottomFNbNiZPv")
+    extern(D) void* function() nothrow @nogc getStackBottom;
+
+    pragma(mangle, "_D6strand8osthread11getStackTopFNbNiZPv")
+    extern(D) void* function() nothrow @nogc getStackTop;
 }
 
 
@@ -750,7 +756,8 @@ package(strand):
 // GC Support Routines
 ///////////////////////////////////////////////////////////////////////////////
 
-private alias attachThread = externDFunc!("strand.osthread.attachThread", ThreadBase function(ThreadBase) @nogc nothrow);
+pragma(mangle, "_D6strand8osthread12attachThreadFNbNiCQBk10threadbase10ThreadBaseZQBd")
+ThreadBase function(ThreadBase) @nogc nothrow attachThread;
 
 extern (C) void _d_monitordelete_nogc(Object h) @nogc nothrow;
 
@@ -963,7 +970,8 @@ package __gshared bool multiThreadedFlag = false;
 // Used for suspendAll/resumeAll below.
 package __gshared uint suspendDepth = 0;
 
-private alias resume = externDFunc!("strand.osthread.resume", void function(ThreadBase) nothrow @nogc);
+pragma(mangle, "_D6strand8osthread6resumeFNbNiCQBd10threadbase10ThreadBaseZv")
+extern(D) void function(ThreadBase) nothrow @nogc resume;
 
 /**
  * Resume all threads but the calling thread for "stop the world" garbage
@@ -1038,7 +1046,8 @@ do
 }
 
 package alias callWithStackShellDg = void delegate(void* sp) nothrow;
-private alias callWithStackShell = externDFunc!("strand.osthread.callWithStackShell", void function(scope callWithStackShellDg) nothrow);
+pragma(mangle, "_D6strand8osthread18callWithStackShellFNbMDFNbPvZvZv")
+extern(D) void function(scope callWithStackShellDg) nothrow callWithStackShell;
 
 private void scanAllTypeImpl(scope ScanAllThreadsTypeFn scan, void* curStackTop) nothrow
 {
@@ -1129,7 +1138,8 @@ extern (C) void thread_scanAll(scope ScanAllThreadsFn scan) nothrow
     thread_scanAllType((type, p1, p2) => scan(p1, p2));
 }
 
-private alias thread_yield = externDFunc!("strand.osthread.thread_yield", void function() @nogc nothrow);
+pragma(mangle, "_D6strand8osthread12thread_yieldFNbNiZv")
+void function() @nogc nothrow thread_yield;
 
 /**
  * Signals that the code following this call is a critical region. Any code in
