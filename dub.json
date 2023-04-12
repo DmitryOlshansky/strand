@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"Dmitry Olshansky"
+	],
+	"copyright": "Copyright © 2023, Dmitry Olshansky",
+	"description": "BetterC Fiber implementation",
+	"license": "BOOST",
+	"name": "strand"
+}
