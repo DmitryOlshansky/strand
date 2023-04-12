@@ -10,7 +10,7 @@
  */
 
 module core.thread.fiber;
-asdffa
+
 import core.thread.osthread;
 import core.thread.threadgroup;
 import core.thread.types;
